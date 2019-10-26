@@ -1,3 +1,6 @@
+#ifndef SIMULATION_H
+#define SIMULATION_H
+
 #include "network.h"
 #include <tclap/CmdLine.h>
 
@@ -78,3 +81,4 @@ private:
     std::map< std::string, size_t > ntypes; 
 };
 
+#endif

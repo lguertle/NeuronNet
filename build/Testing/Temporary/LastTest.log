@@ -1,0 +1,79 @@
+Start testing: Oct 26 16:56 CEST
+----------------------------------------------------------
+1/1 Testing: Ex_Neurons
+1/1 Test: Ex_Neurons
+Command: "/home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/build/test_neurons"
+Directory: /home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/build
+"Ex_Neurons" start time: Oct 26 16:56 CEST
+Output:
+----------------------------------------------------------
+[==========] Running 5 tests from 3 test cases.
+[----------] Global test environment set-up.
+[----------] 1 test from simulationTest
+[ RUN      ] simulationTest.parse
+[       OK ] simulationTest.parse (0 ms)
+[----------] 1 test from simulationTest (0 ms total)
+
+[----------] 2 tests from neuronTest
+[ RUN      ] neuronTest.initialize
+[       OK ] neuronTest.initialize (0 ms)
+[ RUN      ] neuronTest.step
+/home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/test_neurons/test_main.cpp:38: Failure
+The difference between -58.105 and n1.potential() is 3.3950000000000031, which exceeds 1e-4, where
+-58.105 evaluates to -58.104999999999997,
+n1.potential() evaluates to -61.5, and
+1e-4 evaluates to 0.0001.
+/home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/test_neurons/test_main.cpp:39: Failure
+The difference between -12.9724 and n1.recovery() is 0.013600000000000279, which exceeds 1e-4, where
+-12.9724 evaluates to -12.9724,
+n1.recovery() evaluates to -12.986000000000001, and
+1e-4 evaluates to 0.0001.
+/home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/test_neurons/test_main.cpp:45: Failure
+Value of: n1.firing()
+  Actual: false
+Expected: true
+[  FAILED  ] neuronTest.step (0 ms)
+[----------] 2 tests from neuronTest (0 ms total)
+
+[----------] 2 tests from networkTest
+[ RUN      ] networkTest.initialize
+[       OK ] networkTest.initialize (1 ms)
+[ RUN      ] networkTest.connect
+/home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/test_neurons/test_main.cpp:92: Failure
+      Expected: 1
+To be equal to: ifirs
+      Which is: 0
+/home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/test_neurons/test_main.cpp:93: Failure
+      Expected: 1
+To be equal to: efirs
+      Which is: 0
+/home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/test_neurons/test_main.cpp:96: Failure
+      Expected: noise
+      Which is: 10
+To be equal to: net.neuron(excit_idx).input()
+      Which is: 20
+/home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/test_neurons/test_main.cpp:97: Failure
+      Expected: .4*noise
+      Which is: 4
+To be equal to: net.neuron(inhib1).input()
+      Which is: 50
+[  FAILED  ] networkTest.connect (4 ms)
+[----------] 2 tests from networkTest (5 ms total)
+
+[----------] Global test environment tear-down
+[==========] 5 tests from 3 test cases ran. (5 ms total)
+[  PASSED  ] 3 tests.
+[  FAILED  ] 2 tests, listed below:
+[  FAILED  ] neuronTest.step
+[  FAILED  ] networkTest.connect
+
+ 2 FAILED TESTS
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Failed.
+"Ex_Neurons" end time: Oct 26 16:56 CEST
+"Ex_Neurons" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 26 16:56 CEST

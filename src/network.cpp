@@ -1,5 +1,7 @@
 #include "network.h"
 #include "random.h"
+#include <vector>
+#include <math.h>
 
 void Network::resize(const size_t &n, double inhib) {
     size_t old = size();
@@ -62,6 +64,33 @@ size_t Network::random_connect(const double &mean_deg, const double &mean_streng
     return num_links;
 }
 
+std::pair<size_t, double> Network::degree(const size_t& n) const
+{
+	std::pair<size_t, double> number_intensity;
+	double intensity(0);
+	for(auto x:neighbors(n))
+	{
+		intensity += x.second;
+	}
+	number_intensity.first = neighbors(n).size();
+	number_intensity.second = intensity;
+
+	return number_intensity;
+}
+
+std::vector<std::pair<size_t, double> > Network::neighbors(const size_t& n) const
+{
+	std::vector<std::pair<size_t, double>> n_neighbors;
+	for (auto x:links)
+	{
+		if (x.first.first == n)
+		{
+			n_neighbors.push_back(std::pair<size_t, double>(x.first.second, x.second));
+		}
+	}
+	return n_neighbors;
+}
+
 std::vector<double> Network::potentials() const {
     std::vector<double> vals;
     for (size_t nn=0; nn<size(); nn++)
@@ -75,6 +104,60 @@ std::vector<double> Network::recoveries() const {
         vals.push_back(neurons[nn].recovery());
     return vals;
 }
+
+std::set<size_t> Network::step(const std::vector<double>& thalamic_input)
+{
+	std::set<size_t> firing_n;
+	/*
+	double size(thalamic_input.size());
+	double sum(0);
+	double mean(0);
+	double var(0);
+	double variance(0);
+	for(size_t i(0); i<size; ++i)
+	{
+		sum += thalamic_input[i];
+	}
+	mean = sum/size;
+	
+	for(size_t i(0); i<size; ++i)
+	{
+		var += pow(thalamic_input[i]-mean,2);
+	}
+	variance = var/size;*/
+
+	double w(0);
+	double activ(0);
+	double inhib(0);
+	for(size_t i(0); i<neurons.size(); ++i)
+	{
+		neurons[i].step();
+		if (neurons[i].is_inhibitory()) {
+			w = 2;
+		}
+		else {
+			w = 5;
+		}
+			for(auto nb:neighbors(i))
+			{
+				if(neurons[nb.first].firing())
+				{
+					if (neurons[nb.first].is_inhibitory()) {
+						inhib += nb.second;
+					}
+					else {
+						activ += nb.second;
+					}
+					firing_n.insert(nb.first);
+					neurons[nb.first].reset();
+				}
+			}
+		firing_n.insert(i);
+		neurons[i].input(thalamic_input[i]/5*w + 0.5*activ-inhib);
+	}
+	return firing_n;
+}
+
 
 void Network::print_params(std::ostream *_out) {
     (*_out) << "Type\ta\tb\tc\td\tInhibitory\tdegree\tvalence" << std::endl;

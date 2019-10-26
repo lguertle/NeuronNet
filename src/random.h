@@ -1,3 +1,6 @@
+#ifndef RANDOM_H
+#define RANDOM_H
+
 #include <random>
 #include <vector>
 #include <algorithm>
@@ -49,3 +52,5 @@ private:
 };
 
 extern RandomNumbers* _RNG;
+
+#endif

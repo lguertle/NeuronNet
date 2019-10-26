@@ -1,3 +1,6 @@
+#ifndef NEURON_H
+#define NEURON_H
+
 #include "globals.h"
 
 /*! \class Neuron
@@ -80,3 +83,4 @@ private:
 
 };
 
+#endif
