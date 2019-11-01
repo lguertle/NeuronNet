@@ -70,10 +70,8 @@ size_t Network::random_connect(const double &mean_deg, const double &mean_streng
 std::pair<size_t, double> Network::degree(const size_t& n) const
 {
 	std::pair<size_t, double> number_intensity;
-	for(auto x:links)
-	{
-		if(x.first.first == n)
-		{
+	for(auto x:links) {
+		if(x.first.first == n) {
 			number_intensity.first ++;
 			number_intensity.second += x.second;
 		}
@@ -115,32 +113,29 @@ std::set<size_t> Network::step(const std::vector<double>& thalamic_input)
 	double activ(0);
 	double inhib(0);
 	double w(0);
-	for(size_t i(0); i<neurons.size(); i++)
-	{
-		if(neurons[i].firing())
-		{
+	for(size_t i(0); i<neurons.size(); i++) {
+		if(neurons[i].firing()) {
 			neurons[i].reset();
 			firing_n.insert(i);
 		}
-		for(auto nb:neighbors(i))
-		{
-			if(neurons[nb.first].firing())
-			{
+		for(auto nb:neighbors(i)) {
+			if(neurons[nb.first].firing()) {
 				if (neurons[nb.first].is_inhibitory()) {
 					inhib += nb.second;
 				}
 				else {
 					activ += nb.second;
 				}
-			}}
-			if (neurons[i].is_inhibitory()) {
-				w = 2;
 			}
-			else {
-				w = 5;
-			}
-			neurons[i].step();
-			neurons[i].input(thalamic_input[i]/5.*w + 0.5*activ-inhib);
+		}
+		if (neurons[i].is_inhibitory()) {
+			w = 2;
+		}
+		else {
+			w = 5;
+		}
+		neurons[i].step();
+		neurons[i].input(thalamic_input[i]/5.*w + 0.5*activ-inhib);
 	}
 	return firing_n;
 }
