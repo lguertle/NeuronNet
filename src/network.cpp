@@ -2,6 +2,9 @@
 #include "random.h"
 #include <vector>
 #include <math.h>
+#include <algorithm>
+#include <iterator>
+#include <map>
 
 void Network::resize(const size_t &n, double inhib) {
     size_t old = size();
@@ -67,26 +70,27 @@ size_t Network::random_connect(const double &mean_deg, const double &mean_streng
 std::pair<size_t, double> Network::degree(const size_t& n) const
 {
 	std::pair<size_t, double> number_intensity;
-	double intensity(0);
-	for(auto x:neighbors(n))
+	for(auto x:links)
 	{
-		intensity += x.second;
+		if(x.first.first == n)
+		{
+			number_intensity.first ++;
+			number_intensity.second += x.second;
+		}
 	}
-	number_intensity.first = neighbors(n).size();
-	number_intensity.second = intensity;
-
 	return number_intensity;
 }
 
 std::vector<std::pair<size_t, double> > Network::neighbors(const size_t& n) const
 {
 	std::vector<std::pair<size_t, double>> n_neighbors;
-	for (auto x:links)
-	{
-		if (x.first.first == n)
-		{
-			n_neighbors.push_back(std::pair<size_t, double>(x.first.second, x.second));
-		}
+	std::map<std::pair<size_t,size_t>,double>::const_iterator it_bot, it_top;
+	
+	it_bot = links.lower_bound(std::make_pair(n,0));
+	it_top = links.upper_bound(std::make_pair(n,0));
+	
+	for( ; it_bot != it_top; ++it_bot) {
+		n_neighbors.push_back(std::make_pair(it_bot->first.second, it_bot->second));
 	}
 	return n_neighbors;
 }
@@ -108,52 +112,35 @@ std::vector<double> Network::recoveries() const {
 std::set<size_t> Network::step(const std::vector<double>& thalamic_input)
 {
 	std::set<size_t> firing_n;
-	/*
-	double size(thalamic_input.size());
-	double sum(0);
-	double mean(0);
-	double var(0);
-	double variance(0);
-	for(size_t i(0); i<size; ++i)
-	{
-		sum += thalamic_input[i];
-	}
-	mean = sum/size;
-	
-	for(size_t i(0); i<size; ++i)
-	{
-		var += pow(thalamic_input[i]-mean,2);
-	}
-	variance = var/size;*/
-
-	double w(0);
 	double activ(0);
 	double inhib(0);
-	for(size_t i(0); i<neurons.size(); ++i)
+	double w(0);
+	for(size_t i(0); i<neurons.size(); i++)
 	{
-		neurons[i].step();
-		if (neurons[i].is_inhibitory()) {
-			w = 2;
+		if(neurons[i].firing())
+		{
+			neurons[i].reset();
+			firing_n.insert(i);
 		}
-		else {
-			w = 5;
-		}
-			for(auto nb:neighbors(i))
+		for(auto nb:neighbors(i))
+		{
+			if(neurons[nb.first].firing())
 			{
-				if(neurons[nb.first].firing())
-				{
-					if (neurons[nb.first].is_inhibitory()) {
-						inhib += nb.second;
-					}
-					else {
-						activ += nb.second;
-					}
-					firing_n.insert(nb.first);
-					neurons[nb.first].reset();
+				if (neurons[nb.first].is_inhibitory()) {
+					inhib += nb.second;
 				}
+				else {
+					activ += nb.second;
+				}
+			}}
+			if (neurons[i].is_inhibitory()) {
+				w = 2;
 			}
-		firing_n.insert(i);
-		neurons[i].input(thalamic_input[i]/5*w + 0.5*activ-inhib);
+			else {
+				w = 5;
+			}
+			neurons[i].step();
+			neurons[i].input(thalamic_input[i]/5.*w + 0.5*activ-inhib);
 	}
 	return firing_n;
 }

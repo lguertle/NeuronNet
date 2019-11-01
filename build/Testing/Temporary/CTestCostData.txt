@@ -1,3 +1,2 @@
-Ex_Neurons 8 0
+Ex_Neurons 2 0.010272
 ---
-Ex_Neurons

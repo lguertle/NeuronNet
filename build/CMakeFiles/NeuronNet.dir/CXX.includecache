@@ -45,6 +45,12 @@ vector
 -
 math.h
 -
+algorithm
+-
+iterator
+-
+map
+-
 
 /home/lguertle/myfiles/Programmation/ProgBa3/Ex_Neurons/NeuronNet/src/network.h
 globals.h
